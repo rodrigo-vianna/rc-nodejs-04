@@ -1,0 +1,60 @@
+import { makeQuestionComment } from "../../../../../test/factories/make-question-comment";
+import { InMemoryQuestionCommentsRepository } from "../../../../../test/repositories/in-memory-question-comments-repository";
+import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
+import { FetchQuestionCommentsUseCase } from "./fetch-question-comments";
+
+let inMemoryCommentsRepository: InMemoryQuestionCommentsRepository;
+let sut: FetchQuestionCommentsUseCase;
+
+describe("FetchQuestionCommentsUseCase", () => {
+
+	beforeEach(() => {
+		inMemoryCommentsRepository = new InMemoryQuestionCommentsRepository()
+		sut = new FetchQuestionCommentsUseCase(inMemoryCommentsRepository)
+	})
+
+	it("should be able to fetch question comments by question id", async () => {
+		await inMemoryCommentsRepository.create(makeQuestionComment({
+			questionId: new UniqueEntityId('question-1'),
+			createdAt: new Date(2023, 12, 3)
+		}))
+		await inMemoryCommentsRepository.create(makeQuestionComment({
+			questionId: new UniqueEntityId('question-1'),
+			createdAt: new Date(2023, 11, 1)
+		}))
+		await inMemoryCommentsRepository.create(makeQuestionComment({
+			questionId: new UniqueEntityId('question-1'),
+			createdAt: new Date(2023, 12, 4)
+		}))
+		await inMemoryCommentsRepository.create(makeQuestionComment({
+			questionId: new UniqueEntityId('question-2'),
+		}))
+
+		const { questionComments } = await sut.execute({
+			questionId: 'question-1',
+			page: 1
+		})
+
+		expect(questionComments).toHaveLength(3)
+		expect(questionComments).toEqual([
+			expect.objectContaining({ createdAt: new Date(2023, 12, 4) }),
+			expect.objectContaining({ createdAt: new Date(2023, 12, 3) }),
+			expect.objectContaining({ createdAt: new Date(2023, 11, 1) })
+		])
+	})
+
+	it("should be able to fetch question comments by question id", async () => {
+		for (let i = 0; i < 22; i++) {
+			await inMemoryCommentsRepository.create(makeQuestionComment({
+				questionId: new UniqueEntityId('question-1'),
+			}))
+		}
+
+		const { questionComments } = await sut.execute({
+			questionId: 'question-1',
+			page: 2
+		})
+
+		expect(questionComments).toHaveLength(2)
+	})
+})

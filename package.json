@@ -1,0 +1,33 @@
+{
+  "name": "rc-nodejs-04",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigo-vianna/rc-nodejs-04.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rodrigo-vianna/rc-nodejs-04/issues"
+  },
+  "homepage": "https://github.com/rodrigo-vianna/rc-nodejs-04#readme",
+  "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "@rocketseat/eslint-config": "^2.1.0",
+    "@types/node": "^20.8.7",
+    "eslint": "^8.52.0",
+    "typescript": "^5.2.2",
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^0.34.6"
+  }
+}
