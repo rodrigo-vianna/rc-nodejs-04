@@ -30,13 +30,14 @@ describe("FetchQuestionAnswersUseCase", () => {
 			questionId: new UniqueEntityId('question-2'),
 		}))
 
-		const { answers } = await sut.execute({
+		const result = await sut.execute({
 			questionId: 'question-1',
 			page: 1
 		})
 
-		expect(answers).toHaveLength(3)
-		expect(answers).toEqual([
+		expect(result.isRight()).toBeTruthy()
+		expect(result.isRight() && result.value.answers).toHaveLength(3)
+		expect(result.isRight() && result.value.answers).toEqual([
 			expect.objectContaining({ createdAt: new Date(2023, 12, 4) }),
 			expect.objectContaining({ createdAt: new Date(2023, 12, 3) }),
 			expect.objectContaining({ createdAt: new Date(2023, 11, 1) })
@@ -50,11 +51,12 @@ describe("FetchQuestionAnswersUseCase", () => {
 			}))
 		}
 
-		const { answers } = await sut.execute({
+		const result = await sut.execute({
 			questionId: 'question-1',
 			page: 2
 		})
 
-		expect(answers).toHaveLength(2)
+		expect(result.isRight()).toBeTruthy()
+		expect(result.isRight() && result.value.answers).toHaveLength(2)
 	})
 })

@@ -30,13 +30,14 @@ describe("FetchAnswerCommentsUseCase", () => {
 			answerId: new UniqueEntityId('answer-2'),
 		}))
 
-		const { answerComments } = await sut.execute({
+		const result = await sut.execute({
 			answerId: 'answer-1',
 			page: 1
 		})
 
-		expect(answerComments).toHaveLength(3)
-		expect(answerComments).toEqual([
+		expect(result.isRight()).toBeTruthy()
+		expect(result.isRight() && result.value.answerComments).toHaveLength(3)
+		expect(result.isRight() && result.value.answerComments).toEqual([
 			expect.objectContaining({ createdAt: new Date(2023, 12, 4) }),
 			expect.objectContaining({ createdAt: new Date(2023, 12, 3) }),
 			expect.objectContaining({ createdAt: new Date(2023, 11, 1) })
@@ -50,11 +51,12 @@ describe("FetchAnswerCommentsUseCase", () => {
 			}))
 		}
 
-		const { answerComments } = await sut.execute({
+		const result = await sut.execute({
 			answerId: 'answer-1',
 			page: 2
 		})
 
-		expect(answerComments).toHaveLength(2)
+		expect(result.isRight()).toBeTruthy()
+		expect(result.isRight() && result.value.answerComments).toHaveLength(2)
 	})
 })

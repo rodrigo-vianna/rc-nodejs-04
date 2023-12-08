@@ -4,6 +4,7 @@ import { InMemoryAnswersRepository } from "../../../../../test/repositories/in-m
 import { InMemoryQuestionsRepository } from "../../../../../test/repositories/in-memory-questions-repository";
 import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
 import { ChooseQuestionBestAnswerUseCase } from "./choose-question-best-answer";
+import { NotAllowedError } from "./errors/not-allowed-error";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
@@ -44,11 +45,13 @@ describe("ChooseQuestionBestAnswerUseCase", () => {
 		await inMemoryQuestionsRepository.create(question)
 		await inMemoryAnswersRepository.create(answer)
 
-		await expect(async () => await sut.execute({
+		const result = await sut.execute({
 			answerId: answer.id.toString(),
 			authorId: 'author-2'
-		})).rejects.toThrowError("Unauthorized")
+		})
 
+		expect(result.isLeft()).toBeTruthy()
+		expect(result.value).toBeInstanceOf(NotAllowedError)
 		expect(inMemoryQuestionsRepository.items[0].bestAnswerId).toBeFalsy()
 	})
 })

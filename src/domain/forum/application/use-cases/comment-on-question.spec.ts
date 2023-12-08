@@ -2,6 +2,7 @@ import { makeQuestion } from "../../../../../test/factories/make-question";
 import { InMemoryQuestionCommentsRepository } from "../../../../../test/repositories/in-memory-question-comments-repository";
 import { InMemoryQuestionsRepository } from "../../../../../test/repositories/in-memory-questions-repository";
 import { CommentOnQuestionUseCase } from "./comment-on-question";
+import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let inMemoryQuestionCommentsRepository: InMemoryQuestionCommentsRepository;
@@ -23,24 +24,25 @@ describe("CommentOnQuestionUseCase", () => {
 
 		await inMemoryQuestionsRepository.create(question)
 
-		const { questionComment } = await sut.execute({
+		const result = await sut.execute({
 			questionId: question.id.value,
 			authorId: "author-1",
 			content: "Content",
 		})
 
-		expect(questionComment.id).toBeTruthy()
-		expect(questionComment.content).toEqual("Content")
-		expect(inMemoryQuestionCommentsRepository.items[0].id).toEqual(questionComment.id)
+		expect(result.isRight()).toBeTruthy()
+		expect(inMemoryQuestionCommentsRepository.items[0].id).toEqual(result.isRight() && result.value.questionComment.id)
 	})
 
 	it("should not be able to comment on question that doesn't exist", async () => {
-		await expect(async () => await sut.execute({
+		const result = await sut.execute({
 			questionId: 'question-1',
 			authorId: "author-1",
 			content: "Content",
-		})).rejects.toThrowError("Question not found")
+		})
 
+		expect(result.isLeft()).toBeTruthy()
+		expect(result.value).toBeInstanceOf(ResourceNotFoundError)
 		expect(inMemoryQuestionCommentsRepository.items).toHaveLength(0)
 	})
 

@@ -2,6 +2,7 @@ import { makeQuestion } from "../../../../../test/factories/make-question";
 import { InMemoryQuestionsRepository } from "../../../../../test/repositories/in-memory-questions-repository";
 import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
 import { DeleteQuestionUseCase } from "./delete-question";
+import { NotAllowedError } from "./errors/not-allowed-error";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let sut: DeleteQuestionUseCase;
@@ -35,11 +36,13 @@ describe("DeleteQuestionUseCase", () => {
 
 		await inMemoryQuestionsRepository.create(newQuestion)
 
-		await expect(async () => await sut.execute({
+		const result = await sut.execute({
 			questionId: 'question-1',
 			authorId: 'author-2'
-		})).rejects.toThrowError("Unauthorized")
+		})
 
+		expect(result.isLeft()).toBeTruthy()
+		expect(result.value).toBeInstanceOf(NotAllowedError)
 		expect(inMemoryQuestionsRepository.items).toHaveLength(1)
 	})
 })

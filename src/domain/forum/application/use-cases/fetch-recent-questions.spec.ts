@@ -23,12 +23,13 @@ describe("FetchRecentQuestionsUseCase", () => {
 			createdAt: new Date(2023, 12, 4)
 		}))
 
-		const { questions } = await sut.execute({
+		const result = await sut.execute({
 			page: 1
 		})
 
-		expect(questions).toHaveLength(3)
-		expect(questions).toEqual([
+		expect(result.isRight()).toBeTruthy()
+		expect(result.isRight() && result.value.questions).toHaveLength(3)
+		expect(result.isRight() && result.value.questions).toEqual([
 			expect.objectContaining({ createdAt: new Date(2023, 12, 4) }),
 			expect.objectContaining({ createdAt: new Date(2023, 12, 3) }),
 			expect.objectContaining({ createdAt: new Date(2023, 11, 1) })
@@ -40,10 +41,11 @@ describe("FetchRecentQuestionsUseCase", () => {
 			await inMemoryQuestionsRepository.create(makeQuestion())
 		}
 
-		const { questions } = await sut.execute({
+		const result = await sut.execute({
 			page: 2
 		})
 
-		expect(questions).toHaveLength(2)
+		expect(result.isRight()).toBeTruthy()
+		expect(result.isRight() && result.value.questions).toHaveLength(2)
 	})
 })

@@ -2,6 +2,7 @@ import { makeAnswer } from "../../../../../test/factories/make-answer";
 import { InMemoryAnswersRepository } from "../../../../../test/repositories/in-memory-answers-repository";
 import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
 import { DeleteAnswerUseCase } from "./delete-answer";
+import { NotAllowedError } from "./errors/not-allowed-error";
 
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
 let sut: DeleteAnswerUseCase;
@@ -35,11 +36,13 @@ describe("DeleteAnswerUseCase", () => {
 
 		await inMemoryAnswersRepository.create(newAnswer)
 
-		await expect(async () => await sut.execute({
+		const result = await sut.execute({
 			answerId: 'answer-1',
 			authorId: 'author-2'
-		})).rejects.toThrowError("Unauthorized")
+		})
 
+		expect(result.isLeft()).toBeTruthy()
+		expect(result.value).toBeInstanceOf(NotAllowedError)
 		expect(inMemoryAnswersRepository.items).toHaveLength(1)
 	})
 })
