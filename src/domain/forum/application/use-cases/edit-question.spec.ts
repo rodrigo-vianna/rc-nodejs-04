@@ -1,17 +1,20 @@
 import { makeQuestion } from "../../../../../test/factories/make-question";
+import { InMemoryQuestionAttachmentsRepository } from "../../../../../test/repositories/in-memory-question-attachments-repository";
 import { InMemoryQuestionsRepository } from "../../../../../test/repositories/in-memory-questions-repository";
 import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
 import { EditQuestionUseCase } from "./edit-question";
 import { NotAllowedError } from "./errors/not-allowed-error";
 
+let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let sut: EditQuestionUseCase;
 
 describe("EditQuestionUseCase", () => {
 
 	beforeEach(() => {
-		inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
-		sut = new EditQuestionUseCase(inMemoryQuestionsRepository)
+		inMemoryQuestionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository()
+		inMemoryQuestionsRepository = new InMemoryQuestionsRepository(inMemoryQuestionAttachmentsRepository)
+		sut = new EditQuestionUseCase(inMemoryQuestionsRepository, inMemoryQuestionAttachmentsRepository)
 	})
 
 	it("should edit a question", async () => {
@@ -27,7 +30,8 @@ describe("EditQuestionUseCase", () => {
 			questionId: 'question-1',
 			authorId: 'author-1',
 			title: 'New title',
-			content: 'New content'
+			content: 'New content',
+			attachmentsIds: []
 		})
 
 		expect(inMemoryQuestionsRepository.items[0].title).toBe('New title')
@@ -47,7 +51,8 @@ describe("EditQuestionUseCase", () => {
 			questionId: 'question-1',
 			authorId: 'author-2',
 			title: 'New title',
-			content: 'New content'
+			content: 'New content',
+			attachmentsIds: []
 		})
 
 		expect(result.isLeft()).toBeTruthy()

@@ -15,7 +15,8 @@ describe("AnswerQuestionUseCase", () => {
 		const result = await sut.execute({
 			questionId: "2",
 			instructorId: "1",
-			content: "Answer content"
+			content: "Answer content",
+			attachmentsIds: []
 		})
 
 		expect(result.isRight()).toBeTruthy()
