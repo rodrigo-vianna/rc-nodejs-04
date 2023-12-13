@@ -7,10 +7,7 @@ export interface AttachmentProps {
 }
 
 export class Attachment extends AggregateRoot<AttachmentProps> {
-  static create(
-    props: AttachmentProps,
-    id?: UniqueEntityId,
-  ) {
+  static create(props: AttachmentProps, id?: UniqueEntityId) {
     const entity = new Attachment(
       {
         ...props,
@@ -20,11 +17,11 @@ export class Attachment extends AggregateRoot<AttachmentProps> {
     return entity
   }
 
-	get title(): string {
-		return this.props.title
-	}
+  get title(): string {
+    return this.props.title
+  }
 
-	set title(value: string) {
-		this.props.title = value
-	}
+  set title(value: string) {
+    this.props.title = value
+  }
 }

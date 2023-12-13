@@ -21,7 +21,7 @@ export class AnswerComment extends Comment<AnswerCommentProps> {
     return entity
   }
 
-	get answerId() {
-		return this.props.answerId
-	}
+  get answerId() {
+    return this.props.answerId
+  }
 }

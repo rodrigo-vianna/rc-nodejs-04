@@ -1,16 +1,19 @@
 import { makeAnswer } from "../../../../../test/factories/make-answer";
+import { InMemoryAnswerAttachmentsRepository } from "../../../../../test/repositories/in-memory-answer-attachments-repository";
 import { InMemoryAnswersRepository } from "../../../../../test/repositories/in-memory-answers-repository";
 import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
 import { EditAnswerUseCase } from "./edit-answer";
 import { NotAllowedError } from "./errors/not-allowed-error";
 
+let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
 let sut: EditAnswerUseCase;
 
 describe("EditAnswerUseCase", () => {
 
 	beforeEach(() => {
-		inMemoryAnswersRepository = new InMemoryAnswersRepository()
+    inMemoryAnswerAttachmentsRepository = new InMemoryAnswerAttachmentsRepository()
+		inMemoryAnswersRepository = new InMemoryAnswersRepository(inMemoryAnswerAttachmentsRepository)
 		sut = new EditAnswerUseCase(inMemoryAnswersRepository)
 	})
 

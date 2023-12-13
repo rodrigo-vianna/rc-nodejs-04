@@ -3,20 +3,26 @@ import { Answer } from '../../enterprise/entities/answer'
 import { AnswersRepository } from '../repositories/answers-repository'
 
 interface FetchQuestionAnswersUseCaseRequest {
-	page: number
-	questionId: string
+  page: number
+  questionId: string
 }
 
-type FetchQuestionAnswersUseCaseResponse = Either<{}, { answers: Answer[] }>
+type FetchQuestionAnswersUseCaseResponse = Either<
+  unknown,
+  { answers: Answer[] }
+>
 
 export class FetchQuestionAnswersUseCase {
-	constructor(private readonly answersRepository: AnswersRepository) {}
+  constructor(private readonly answersRepository: AnswersRepository) {}
 
-	public async execute({
-		questionId,
-		page,
-	}: FetchQuestionAnswersUseCaseRequest): Promise<FetchQuestionAnswersUseCaseResponse> {
-		const answers = await this.answersRepository.findManyByQuestionId(questionId, {page})
-		return right({ answers })
-	}
+  public async execute({
+    questionId,
+    page,
+  }: FetchQuestionAnswersUseCaseRequest): Promise<FetchQuestionAnswersUseCaseResponse> {
+    const answers = await this.answersRepository.findManyByQuestionId(
+      questionId,
+      { page },
+    )
+    return right({ answers })
+  }
 }

@@ -11,7 +11,7 @@ export interface QuestionProps {
   slug: Slug
   authorId: UniqueEntityId
   bestAnswerId?: UniqueEntityId
-	attachments: QuestionAttachmentList
+  attachments: QuestionAttachmentList
   createdAt: Date
   updatedAt?: Date
 }
@@ -26,7 +26,7 @@ export class Question extends AggregateRoot<QuestionProps> {
         ...props,
         slug: props.slug ?? Slug.createFromText(props.title),
         createdAt: props.createdAt ?? new Date(),
-				attachments: props.attachments ?? new QuestionAttachmentList(),
+        attachments: props.attachments ?? new QuestionAttachmentList(),
       },
       id,
     )
@@ -68,21 +68,21 @@ export class Question extends AggregateRoot<QuestionProps> {
     return this.props.bestAnswerId
   }
 
-	get attachments(): QuestionAttachmentList {
-		return this.props.attachments
-	}
-
-	set attachments(value: QuestionAttachmentList) {
-		this.props.attachments = value
-		this.touch()
-	}
-
   set bestAnswerId(value: UniqueEntityId | undefined) {
-		if (value && value !== this.props.bestAnswerId) {
+    if (value && value !== this.props.bestAnswerId) {
       this.addDomainEvent(new QuestionBestAnswerChosenEvent(this, value))
     }
 
     this.props.bestAnswerId = value
+    this.touch()
+  }
+
+  get attachments(): QuestionAttachmentList {
+    return this.props.attachments
+  }
+
+  set attachments(value: QuestionAttachmentList) {
+    this.props.attachments = value
     this.touch()
   }
 

@@ -9,7 +9,6 @@ export interface CommentProps {
 }
 
 export abstract class Comment<P extends CommentProps> extends Entity<P> {
-
   protected touch() {
     this.props.updatedAt = new Date()
   }

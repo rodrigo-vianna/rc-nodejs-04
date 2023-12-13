@@ -6,45 +6,46 @@ import { QuestionAttachmentList } from '../../enterprise/entities/question-attac
 import { QuestionsRepository } from '../repositories/questions-repository'
 
 interface CreateQuestionUseCaseRequest {
-	authorId: string
-	title: string
-	content: string
-	attachmentsIds: string[]
+  authorId: string
+  title: string
+  content: string
+  attachmentsIds: string[]
 }
 
-type CreateQuestionUseCaseResponse = Either<{}, {
-	question: Question
-}>
+type CreateQuestionUseCaseResponse = Either<
+  unknown,
+  {
+    question: Question
+  }
+>
 
 export class CreateQuestionUseCase {
-	constructor(private readonly questionsRepository: QuestionsRepository) {}
+  constructor(private readonly questionsRepository: QuestionsRepository) {}
 
-	public async execute({
-		authorId,
-		title,
-		content,
-		attachmentsIds,
-	}: CreateQuestionUseCaseRequest): Promise<CreateQuestionUseCaseResponse> {
-		
-		const question = Question.create({
-			authorId: new UniqueEntityId(authorId),
-			title,
-			content,
-		});
+  public async execute({
+    authorId,
+    title,
+    content,
+    attachmentsIds,
+  }: CreateQuestionUseCaseRequest): Promise<CreateQuestionUseCaseResponse> {
+    const question = Question.create({
+      authorId: new UniqueEntityId(authorId),
+      title,
+      content,
+    })
 
-		const attachments = attachmentsIds.map((attachmentId) => {
-			return QuestionAttachment.create({
-				attachmentId: new UniqueEntityId(attachmentId),
-				questionId: new UniqueEntityId(),
-			})
-		})
-		question.attachments = new QuestionAttachmentList(attachments);
+    const attachments = attachmentsIds.map((attachmentId) => {
+      return QuestionAttachment.create({
+        attachmentId: new UniqueEntityId(attachmentId),
+        questionId: new UniqueEntityId(),
+      })
+    })
+    question.attachments = new QuestionAttachmentList(attachments)
 
-		await this.questionsRepository.create(question);
+    await this.questionsRepository.create(question)
 
-
-		return right({
-			question
-		});
-	}
+    return right({
+      question,
+    })
+  }
 }
