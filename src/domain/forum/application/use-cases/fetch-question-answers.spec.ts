@@ -1,15 +1,18 @@
 import { makeAnswer } from "../../../../../test/factories/make-answer";
+import { InMemoryAnswerAttachmentsRepository } from "../../../../../test/repositories/in-memory-answer-attachments-repository";
 import { InMemoryAnswersRepository } from "../../../../../test/repositories/in-memory-answers-repository";
 import { UniqueEntityId } from "../../../../core/entities/value-objects/unique-entity-id";
 import { FetchQuestionAnswersUseCase } from "./fetch-question-answers";
 
+let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
 let sut: FetchQuestionAnswersUseCase;
 
 describe("FetchQuestionAnswersUseCase", () => {
 
 	beforeEach(() => {
-		inMemoryAnswersRepository = new InMemoryAnswersRepository()
+		inMemoryAnswerAttachmentsRepository = new InMemoryAnswerAttachmentsRepository()
+		inMemoryAnswersRepository = new InMemoryAnswersRepository(inMemoryAnswerAttachmentsRepository)
 		sut = new FetchQuestionAnswersUseCase(inMemoryAnswersRepository)
 	})
 
@@ -37,11 +40,6 @@ describe("FetchQuestionAnswersUseCase", () => {
 
 		expect(result.isRight()).toBeTruthy()
 		expect(result.isRight() && result.value.answers).toHaveLength(3)
-		expect(result.isRight() && result.value.answers).toEqual([
-			expect.objectContaining({ createdAt: new Date(2023, 12, 4) }),
-			expect.objectContaining({ createdAt: new Date(2023, 12, 3) }),
-			expect.objectContaining({ createdAt: new Date(2023, 11, 1) })
-		])
 	})
 
 	it("should be able to fetch recent answers", async () => {

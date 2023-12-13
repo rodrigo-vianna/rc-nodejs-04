@@ -14,4 +14,8 @@ export class UniqueEntityId {
   get value(): string {
     return this._value
   }
+
+	public equals(id: UniqueEntityId) {
+    return id.value === this.value
+  }
 }

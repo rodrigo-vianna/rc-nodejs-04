@@ -4,7 +4,7 @@ import { QuestionAttachment } from "./question-attachment";
 export class QuestionAttachmentList extends WatchedList<QuestionAttachment> {
 
 	compareItems(a: QuestionAttachment, b: QuestionAttachment): boolean {
-		return a.id === b.id;
+		return a.id.equals(b.id);
 	}
 
 }
